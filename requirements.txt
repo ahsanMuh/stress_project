@@ -1,0 +1,5 @@
+# python 3.8.16
+streamlit
+fastapi[all]
+sqlalchemy
+psycopg2-binary
