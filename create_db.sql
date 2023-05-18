@@ -1,7 +1,7 @@
 CREATE TABLE Admin (
   id SERIAL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
   username VARCHAR(50) NOT NULL,
-  user_id VARCHAR(50) NOT NULL,
   phone BIGINT NOT NULL,
   company VARCHAR(50) NOT NULL,
   email VARCHAR(50) NOT NULL,
@@ -18,6 +18,6 @@ CREATE TABLE Employee (
 CREATE TABLE Stress (
   id SERIAL PRIMARY KEY,
   employee_id INT NOT NULL REFERENCES Employee(id),
-  stress_level INT NOT NULL,
+  stress_level BOOL NOT NULL,
   datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

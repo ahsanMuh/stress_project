@@ -1,7 +1,10 @@
-import streamlit as st
 import requests
+import config
+import json
 
-API_URL = "http://localhost:8000"
+import streamlit as st
+
+API_URL = config.API_ROOT_ADR
 
 # First page - Login
 def login():
@@ -15,15 +18,15 @@ def login():
     # Login button
     if st.button("Login"):
         # Call API to authenticate user
-        #response = requests.post(f"{API_URL}/admin/login", json={"username": username, "password": password})
+        response = requests.post(f"{API_URL}/admin/login", json={"username": username, "password": password})
 
-        if  True:#response.status_code == 200:
+        if  response.status_code == 200:
             # Save the token and user ID in the session
-            token = 'aaaa' # response.json()["token"]
-            user_id = 123  # response.json()["id"]
-            st.session_state.token = token
-            st.session_state.user_id = user_id
-            # Go to the second page - File Upload
+            response_json = json.loads(response.text)
+
+            # Save the token and user ID in the session
+            st.session_state.token = response_json["token"]
+            st.session_state.user_id = response_json["id"]
             file_upload()
         else:
             st.error("Invalid username or password")
@@ -35,12 +38,15 @@ def file_upload():
     st.write("Please upload an EEG file and select the employee ID")
 
     # Get the list of employee IDs associated with the current admin
-    headers = {"Authorization": f"Bearer {st.session_state.token}"}
-    # response = requests.get(f"{API_URL}/admin/{st.session_state.user_id}/employees", headers=headers)
+    response = requests.get(
+        f"{API_URL}/stress/list?_id={st.session_state.user_id}")
+
     if False:  # response.status_code != 200:
         st.error("Failed to fetch employee IDs")
         return
-    employee_ids = [10001, 10002, 10003] #[employee["id"] for employee in response.json()]
+    response_json = json.loads(response.text)
+    stress_list = response_json['stress_list']
+    employee_ids = [employee["employee-id"] for employee in stress_list]
 
     # File upload and employee ID selection
     eeg_file = st.file_uploader("Upload an EEG file", type="eeg")
@@ -53,12 +59,12 @@ def file_upload():
             return
 
         # Call API to submit the file and employee ID
-        headers = {"Authorization": f"Bearer {st.session_state.token}"}
+        # headers = {"Authorization": f"Bearer {st.session_state.token}"}
         files = {"file": eeg_file.read()}
         data = {"employee_id": employee_id}
-        # response = requests.post(f"{API_URL}/admin/{st.session_state.user_id}/upload", files=files, data=data, headers=headers)
+        response = requests.post(f"{API_URL}/stress/add", files=files, data=data)
 
-        if True:  # response.status_code == 200:
+        if response.status_code == 200:
             st.success('Success!')  # response.json()["message"])
         else:
             st.error(response.json()["message"])

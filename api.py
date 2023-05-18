@@ -1,11 +1,12 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, File, Form, HTTPException
 import json
+import config
 
 from db_helper import DBHelper
 
 app = FastAPI()
 
-conn_str = '' # removed it for security purposes
+conn_str = config.SQL_CONN_STR
 db_helper = DBHelper(conn_str)
 
 
@@ -17,9 +18,13 @@ async def admin_login(body : Request):
 
     _id = db_helper.verify_admin_login(username, password)  # gets admin id or -1 incase of an error 
 
-    response = {'id': _id, 'token': 'dummytoken'} 
+    if _id == -1:
+        raise HTTPException(status_code=400, detail="Invalid username or password")
 
-    return json.dumps(response)
+    response = {'id': _id, 'token': 'dummytoken'}
+
+    return response
+
 
 @app.post("/admin/signup")
 async def admin_signup(body : Request):
@@ -38,7 +43,7 @@ async def admin_signup(body : Request):
 
     response = {'id': _id, 'token': 'dummytoken'} 
 
-    return json.dumps(response)
+    return response
 
 
 @app.get("/admin/profile")
@@ -47,7 +52,7 @@ async def get_admin_profile(_id: int):
     # of admin
     admin_profile = db_helper.read_admin_profile(_id)
 
-    return json.dumps(admin_profile)
+    return admin_profile
 
 
 @app.get("/stress/list")
@@ -71,3 +76,11 @@ async def get_stress_history(_id: int, start_datetime: str,
     response = {'stress_list': stress_list}
 
     return response
+
+@app.post("/stress/add")
+async def add_stress_entry(file: bytes = File(...), employee_id: int = Form(...)):
+    # Perform the necessary operations with the received file and employee ID
+    # For example, save the file, process the data, and store it in the database
+    print(employee_id)
+    # Return a success message
+    return {"message": "Stress entry added successfully"}

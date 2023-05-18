@@ -70,7 +70,7 @@ class DBHelper:
             stress = db.query(Stress).filter_by(id=employee.id).order_by(Stress.datetime.desc()).first()
             if stress:
                 stress_levels.append({'name': employee.name, 'stress-status': stress.stress_level,
-                                        'user-user-id': employee.id, 'datetime': str(stress.datetime)})
+                                        'employee-id': employee.id, 'datetime': str(stress.datetime)})
         return stress_levels
 
     def get_stress_user(self, employee_id: str, start: datetime, end: datetime) -> list:
