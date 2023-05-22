@@ -3,11 +3,15 @@ import json
 import config
 
 from db_helper import DBHelper
+from predictor import main_predictor
+
 
 app = FastAPI()
 
 conn_str = config.SQL_CONN_STR
 db_helper = DBHelper(conn_str)
+
+edf_file_name = config.EDF_FILE_NAME
 
 
 @app.post("/admin/login")
@@ -78,9 +82,14 @@ async def get_stress_history(_id: int, start_datetime: str,
     return response
 
 @app.post("/stress/add")
-async def add_stress_entry(file: bytes = File(...), employee_id: int = Form(...)):
-    # Perform the necessary operations with the received file and employee ID
-    # For example, save the file, process the data, and store it in the database
-    print(employee_id)
+async def add_stress_entry(file: bytes = File(...),
+                            employee_id: int = Form(...)):
+    # Save the file locally
+    with open(edf_file_name, "wb") as f:
+        f.write(file)
+
+    stress_pred = main_predictor()
+
+    _ = db_helper.create_stress(employee_id, stress_pred)
     # Return a success message
     return {"message": "Stress entry added successfully"}

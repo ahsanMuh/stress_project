@@ -3,4 +3,8 @@ EEG_MODEL_ONLY.ipynb
 null.eeg
 __pycache__/
 stress_project_key.pem
+Raw data .edf/
+eeg_prediction_code.ipynb
+input.edf
+participant_rating_public.xlsx
 

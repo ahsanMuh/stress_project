@@ -28,7 +28,7 @@ class Stress(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer)
-    datetime = Column(DateTime, default=datetime.utcnow)
+    datetime = Column(DateTime, default=datetime.utcnow())
     stress_level = Column(Boolean)
 
 class DBHelper:
@@ -82,3 +82,11 @@ class DBHelper:
             stress_levels.append((str(stress.datetime),
                                   stress.stress_level))
         return {'id': employee_id, 'List': stress_levels}
+    
+    def create_stress(self, _id: int, stress_level: bool) -> int:
+        db = self.SessionLocal()
+        stress = Stress(employee_id=_id, stress_level=stress_level)
+        db.add(stress)
+        db.commit()
+        db.refresh(stress)
+        return stress.id

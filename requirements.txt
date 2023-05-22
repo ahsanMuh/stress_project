@@ -3,3 +3,11 @@ streamlit
 fastapi[all]
 sqlalchemy
 psycopg2-binary
+mne
+mne-features
+openpyxl
+lightgbm
+# include the below libraries if you want to use
+# jupyter notebook in the corr. env
+# ipykernel
+# jupyter

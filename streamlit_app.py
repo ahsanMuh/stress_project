@@ -35,7 +35,7 @@ def login():
 # Second page - File Upload
 def file_upload():
     st.title("File Upload")
-    st.write("Please upload an EEG file and select the employee ID")
+    st.write("Please upload an EDF file and select the employee ID")
 
     # Get the list of employee IDs associated with the current admin
     response = requests.get(
@@ -49,18 +49,18 @@ def file_upload():
     employee_ids = [employee["employee-id"] for employee in stress_list]
 
     # File upload and employee ID selection
-    eeg_file = st.file_uploader("Upload an EEG file", type="eeg")
+    edf_file = st.file_uploader("Upload an edf file", type="edf")
     employee_id = st.selectbox("Select employee ID", employee_ids)
 
     # Submit button
     if st.button("Submit"):
-        if not eeg_file:
-            st.error("Please upload an EEG file")
+        if not edf_file:
+            st.error("Please upload an EDF file")
             return
 
         # Call API to submit the file and employee ID
         # headers = {"Authorization": f"Bearer {st.session_state.token}"}
-        files = {"file": eeg_file.read()}
+        files = {"file": edf_file.read()}
         data = {"employee_id": employee_id}
         response = requests.post(f"{API_URL}/stress/add", files=files, data=data)
 
