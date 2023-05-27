@@ -49,6 +49,19 @@ async def admin_signup(body : Request):
 
     return response
 
+@app.post("/employee/signup")
+async def admin_signup(body : Request):
+    body = await body.json()
+    name = body['name']
+    admin_id = int(body['admin_id'])
+
+
+    # creates a new user in admin table with the given data
+    _id = db_helper.create_employee(name, admin_id) 
+
+    response = {'id': _id} 
+
+    return response
 
 @app.get("/admin/profile")
 async def get_admin_profile(_id: int):

@@ -90,3 +90,11 @@ class DBHelper:
         db.commit()
         db.refresh(stress)
         return stress.id
+
+    def create_employee(self, name: str, admin_id) -> int:
+        db = self.SessionLocal()
+        employee = Employee(name=name, admin_id=admin_id)
+        db.add(employee)
+        db.commit()
+        db.refresh(employee)
+        return employee.id
