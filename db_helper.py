@@ -73,19 +73,22 @@ class DBHelper:
                                         'employee-id': employee.id, 'datetime': str(stress.datetime)})
         return stress_levels
 
-    def get_stress_user(self, employee_id: str, start: datetime, end: datetime) -> list:
+    def get_stress_employee(self, employee_id: int) -> list:
         db = self.SessionLocal()
-        stresses = db.query(Stress).filter_by(id=employee_id).filter(
-                    Stress.datetime >= start).filter(Stress.datetime <= end).all()
+        stresses = db.query(Stress).filter_by(employee_id=employee_id).all()
         stress_levels = []
         for stress in stresses:
             stress_levels.append((str(stress.datetime),
                                   stress.stress_level))
         return {'id': employee_id, 'List': stress_levels}
     
-    def create_stress(self, _id: int, stress_level: bool) -> int:
+    def create_stress(self, _id: int, stress_level: bool,
+                    datetime=None) -> int:
         db = self.SessionLocal()
-        stress = Stress(employee_id=_id, stress_level=stress_level)
+        if datetime:
+            stress = Stress(employee_id=_id, stress_level=stress_level, datetime=datetime)
+        else:
+            stress = Stress(employee_id=_id, stress_level=stress_level)
         db.add(stress)
         db.commit()
         db.refresh(stress)

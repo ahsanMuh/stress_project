@@ -83,12 +83,11 @@ async def get_recent_stress(_id: int):
     return response
 
 @app.get("/stress/history")
-async def get_stress_history(_id: int, start_datetime: str,
-                            end_datetime: str):
+async def get_stress_history(_id: int):
     # return list of a stress for an employee in the range of
     # start and end time
 
-    stress_list = db_helper.get_stress_employee(_id, start_time, end_datetime)
+    stress_list = db_helper.get_stress_employee(_id)
 
     response = {'stress_list': stress_list}
 
