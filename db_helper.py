@@ -67,11 +67,24 @@ class DBHelper:
         employees = db.query(Employee).filter_by(admin_id=admin_id).all()
         stress_levels = []
         for employee in employees:
-            stress = db.query(Stress).filter_by(id=employee.id).order_by(Stress.datetime.desc()).first()
+            stress = db.query(Stress).filter_by(
+                                                employee_id=employee.id).order_by(
+                                                Stress.datetime.desc()).first()
             if stress:
                 stress_levels.append({'name': employee.name, 'stress-status': stress.stress_level,
                                         'employee-id': employee.id, 'datetime': str(stress.datetime)})
         return stress_levels
+
+
+    def get_employees_admin(self, admin_id: int) -> list:
+        db = self.SessionLocal()
+        employees = db.query(Employee).filter_by(admin_id=admin_id).all()
+        stress_levels = []
+
+        employee_ids = [employee.id for employee in employees]
+
+        return employee_ids
+
 
     def get_stress_employee(self, employee_id: int) -> list:
         db = self.SessionLocal()

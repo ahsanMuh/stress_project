@@ -82,6 +82,17 @@ async def get_recent_stress(_id: int):
 
     return response
 
+@app.get("/employee/list")
+async def get_recent_stress(_id: int):
+    # return list of name, stress-status(bool), id of employes
+    # recent for each related to the admin_id
+    employee_ids = db_helper.get_employees_admin(_id)
+
+    response = {'employee_ids': employee_ids}
+
+    return response
+
+
 @app.get("/stress/history")
 async def get_stress_history(_id: int):
     # return list of a stress for an employee in the range of
@@ -102,6 +113,8 @@ async def add_stress_entry(file: bytes = File(...),
 
     stress_pred = main_predictor()
 
-    _ = db_helper.create_stress(employee_id, stress_pred)
+    str_id = db_helper.create_stress(employee_id, stress_pred)
+
+    print('Stress added with id: ', str_id)
     # Return a success message
     return {"message": "Stress entry added successfully"}

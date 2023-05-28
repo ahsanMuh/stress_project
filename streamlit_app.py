@@ -39,14 +39,14 @@ def file_upload():
 
     # Get the list of employee IDs associated with the current admin
     response = requests.get(
-        f"{API_URL}/stress/list?_id={st.session_state.user_id}")
+        f"{API_URL}/employee/list?_id={st.session_state.user_id}")
 
     if False:  # response.status_code != 200:
         st.error("Failed to fetch employee IDs")
         return
     response_json = json.loads(response.text)
-    stress_list = response_json['stress_list']
-    employee_ids = [employee["employee-id"] for employee in stress_list]
+    # stress_list = response_json['stress_list']
+    employee_ids = response_json['employee_ids']
 
     # File upload and employee ID selection
     edf_file = st.file_uploader("Upload an edf file", type="edf")
